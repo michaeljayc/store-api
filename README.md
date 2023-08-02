@@ -1,8 +1,11 @@
-# store-api
+# Title
+store-api 
 
-Store API
+## Description
+An API that I created in performing CRUD operations for a certain model (ProductS) using Node.JS, Express.JS and MongoDB Atlas.
+
 # Starter
-The starter is a copy of jobs-api final project, just with additional data.
+Starter project for store-api. Will add changes from time to time to integrate
 
 # Setup
 clone repository  and install dependencies
@@ -19,4 +22,4 @@ You may want to seed data to your database
 Start the project
 npm start
 
-you should see "Server is listening ...." text
+you should see "Server is listening ...." text upon start
