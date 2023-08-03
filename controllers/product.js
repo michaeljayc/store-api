@@ -1,4 +1,6 @@
 const Product = require('../models/product')
+const BadRequestError = require('../errors/bad-request');
+const {StatusCodes} = require('http-status-codes');
 
 const getProduct = async (req,res) => {
     res.send('get product')
@@ -34,7 +36,7 @@ const getProducts = async (req,res) => {
     const limit = Number(req.query.limit) || 10;
     const skip = (page-1) * limit;
     const products = await result.skip(skip).limit(limit);
-    res.status(200).json({
+    res.status(StatusCodes.OK).json({
         message: "success",
         count: products.length, 
         data: { products },
@@ -43,18 +45,40 @@ const getProducts = async (req,res) => {
 
 const addProduct = async (req,res) => {
     const addedProduct = await Product.create(req.body);
-    res.status(200).json(
+    res.status(StatusCodes.OK).json(
     { message: "Successfully added product.",
       data: addedProduct
     });
 }
 
 const updateProduct = async (req,res) => {
-    res.send('update product')
+    const {id:productID} = req.params;
+    const product = await Product.findOne({_id:productID});
+    if(!product) {
+        throw new BadRequestError(`Product with ID ${productID} not found.`);
+    }
+
+    const result = await Product
+        .findOneAndUpdate(
+            {_id:productID}, 
+            req.body,
+            {new:true, runValidators:true}
+        );
+    res.status(StatusCodes.OK).json({message:"Update successful", result});
 }
 
 const deleteProduct = async (req,res) => {
-    res.send('delete product')
+    const {id:productId} = req.params;
+    const product = await Product.findOne({_id:productId});
+    if(!product) {
+        throw new BadRequestError(`Product with ID ${productId} not found.`);
+    }
+
+    const result = await Product.findOneAndDelete({_id:productId},{new:true});
+    res.status(StatusCodes.OK).json({
+        message: "Product successfully deleted.",
+        data: result
+    })
 }
 
 module.exports = {
