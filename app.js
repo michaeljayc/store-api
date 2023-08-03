@@ -4,9 +4,10 @@ const express = require('express');
 const app = express();
 const morgan = require('morgan');
 const notFoundMiddleware = require('./middlewares/notFound');
-const errorHandlerMiddleware = require('./middlewares/error-handler');
+const { errorHandlerMiddleware }= require('./middlewares/error-handler');
 const connectToDB = require('./db/dbConnect');
 const products = require('./routes/product');
+const auth = require("./routes/auth");
 
 
 //middlewares
@@ -14,6 +15,7 @@ app.use(express.json());
 app.use(morgan('tiny'));
 
 // routes
+app.use('/', auth);
 app.use('/api/v1/products', products);
 
 // custom middlewares
