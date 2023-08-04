@@ -1,38 +1,54 @@
 require('dotenv').config();
 const {StatusCodes} = require('http-status-codes');
-const {BadRequestError} = require("../errors");
+const BadRequestError = require("../errors/bad-request");
+const UnauthorizedError = require("../errors/unautheticated");
 const jwt = require('jsonwebtoken');
 const User = require('../models/user');
 
 const register = async (req,res) => {
-    if(!req.body) {
-        throw new BadRequestError("Provide fields required.");
-    }
-    const user = await User.create(req.body);
-
+    const result = await User.create(req.body);
     res.status(StatusCodes.CREATED).json({
         message: "Registration successful!",
-        user
+        user: {
+            username: result.username,
+            role: result.role
+        },
+        token: await result.generateToken()
     });
 }
 
-const login = (req, res) => {
-    const {username, password} = req.body;
+const login = async (req, res) => {
+    const {email, password} = req.body;
 
-    if(!username || !password) {
-        throw new BadRequestError("Invalid username and password");
+    if(!email || !password) {
+        throw new BadRequestError("Invalid email and password");
     }
 
-    const token = jwt.sign(
-        {username},
-        process.env.SECRET_TOKEN,
-        {expiresIn:'1d'}
-    );
-    res.status(StatusCodes.OK).json({message: "login successful", token});
+    const result = await User.findOne({email});
+    if(!result) {
+        throw new UnauthorizedError("Invalid credentials.");
+    }
+
+    const isPasswordMatch = await result.comparePassword(password);
+    if(!isPasswordMatch) {
+        throw new UnauthorizedError("Incorrect password.");
+    }
+
+    const token = result.generateToken();
+    res.status(StatusCodes.OK).json({
+        message: "Login successful!",
+        user: {
+            email: result.email,
+            username: result.username,
+            role: result.role
+        },
+        token
+    });
 }
 
 const dashboard = (req,res) => {
-    res.status(StatusCodes.OK).json({message:`Welcome, ${req.user.username}!`});
+    const {username, role} = req.user;
+    res.status(StatusCodes.OK).json({message:`Welcome, ${req.user.username}!`,user: {username, role}});
 }
 
 module.exports = { register, login, dashboard };

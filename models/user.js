@@ -1,4 +1,6 @@
 const mongoose = require('mongoose');
+const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
 
 const UserSchema = new mongoose.Schema({
     username: {
@@ -17,15 +19,29 @@ const UserSchema = new mongoose.Schema({
     password: {
         type: String,
         required: [true, "Password field required."],
-        minlength: 3,
-        maxlength: 50
+        minlength: 3
     },
     role: {
         type: String,
-        // enum: { values: ['admin, user'] },
         enum: ["admin","user"],
         default: "user"
     }
 });
+
+UserSchema.pre('save', async function() {
+    const salt = await bcrypt.genSalt(10);
+    this.password = await bcrypt.hash(this.password, salt);
+})
+
+UserSchema.methods.generateToken = function() {
+    return jwt.sign(
+        {username: this.username, role: this.role}, 
+        process.env.SECRET_TOKEN, 
+        {expiresIn: process.env.TOKEN_LIFETIME});
+}
+
+UserSchema.methods.comparePassword = async function(enteredPassword) {
+    return await bcrypt.compare(enteredPassword, this.password);
+}
 
 module.exports = mongoose.model('User', UserSchema);
