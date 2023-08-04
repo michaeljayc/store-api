@@ -13,7 +13,10 @@ const authenticationMiddleware = async (req,res,next) => {
     if(!decoded) {
         throw new UnauthenticatedError("Unauthorized to access route.");
     }
-    req.user = {username: decoded.username};
+    req.user = {
+        username: decoded.username,
+        role: decoded.role
+    };
     next();
 }
 
