@@ -4,8 +4,14 @@ const BadRequestError = require("../errors/bad-request");
 const UnauthorizedError = require("../errors/unautheticated");
 const jwt = require('jsonwebtoken');
 const User = require('../models/user');
+const Role = require('../models/role');
 
 const register = async (req,res) => {
+    const role = await Role.findOne({_id:req.body.role});
+    if(!role) {
+        throw new BadRequestError(`Role id ${req.body.role} does not exist.`);
+    }
+    
     const result = await User.create(req.body);
     res.status(StatusCodes.CREATED).json({
         message: "Registration successful!",
