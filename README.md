@@ -2,7 +2,7 @@
 store-api 
 
 ## Description
-An API that I created in performing CRUD operations for a certain model (ProductS) using Node.JS, Express.JS and MongoDB Atlas.
+Store API that I'm currently improving that will provide different types of customer information regarding restaurants and their products. Created using Node.JS, Express.JS and MongoDB.
 
 # Starter
 Starter project for store-api. Will add changes from time to time to integrate
