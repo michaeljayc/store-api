@@ -32,6 +32,7 @@ app.use(cors());
 app.use(xss);
 
 // routes
+app.get('/', (req,res) => res.send("Welcome to store-api"));
 app.use('/store-api/v1', authRoute);
 app.use('/store-api/v1/users', authenticationMiddleware, userRoute);
 app.use('/store-api/v1/roles', authenticationMiddleware, roleRoute);
