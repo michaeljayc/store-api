@@ -32,11 +32,11 @@ app.use(express.json());
 app.use(morgan('tiny'));
 
 // routes
-app.get('/', (req,res) => res.send("Welcome to store-api"));
-app.use('/store-api/v1', authRoute);
-app.use('/store-api/v1/users', authenticationMiddleware, userRoute);
-app.use('/store-api/v1/roles', authenticationMiddleware, roleRoute);
-app.use('/store-api/v1/products', authenticationMiddleware, productRoute);
+app.get('/api/v1', (req,res) => res.send("Welcome to store-api"));
+app.use('/api/v1', authRoute);
+app.use('/api/v1/users', authenticationMiddleware, userRoute);
+app.use('/api/v1/roles', authenticationMiddleware, roleRoute);
+app.use('/api/v1/products', authenticationMiddleware, productRoute);
 
 // custom middlewares
 app.use(notFoundMiddleware);

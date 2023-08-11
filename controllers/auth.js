@@ -9,7 +9,7 @@ const Role = require('../models/role');
 const register = async (req,res) => {
     const role = await Role.findOne({_id:req.body.role});
     if(!role) {
-        throw new BadRequestError(`Role id ${req.body.role} does not exist.`);
+        throw new BadRequestError(`Please provide correct role id.`);
     }
     
     const result = await User.create(req.body);
@@ -52,9 +52,4 @@ const login = async (req, res) => {
     });
 }
 
-const dashboard = (req,res) => {
-    const {username, role} = req.user;
-    res.status(StatusCodes.OK).json({message:`Welcome, ${req.user.username}!`,user: {username, role}});
-}
-
-module.exports = { register, login, dashboard };
+module.exports = { register, login };
