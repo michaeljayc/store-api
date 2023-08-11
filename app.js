@@ -7,9 +7,11 @@ const notFoundMiddleware = require('./middlewares/notFound');
 const { errorHandlerMiddleware }= require('./middlewares/error-handler');
 const authenticationMiddleware = require('./middlewares/auth');
 const connectToDB = require('./db/dbConnect');
-const products = require('./routes/product');
-const auth = require("./routes/auth");
-const users = require('./routes/user');
+const productRoute = require('./routes/product');
+const authRoute = require("./routes/auth");
+const userRoute = require('./routes/user');
+const roleRoute = require('./routes/role');
+
 
 
 //middlewares
@@ -17,9 +19,11 @@ app.use(express.json());
 app.use(morgan('tiny'));
 
 // routes
-app.use('/store-api/v1', auth);
-app.use('/store-api/v1/users', authenticationMiddleware, users);
-app.use('/store-api/v1/products', authenticationMiddleware, products);
+app.use('/store-api/v1', authRoute);
+app.use('/store-api/v1/users', authenticationMiddleware, userRoute);
+app.use('/store-api/v1/roles', authenticationMiddleware, roleRoute);
+app.use('/store-api/v1/products', authenticationMiddleware, productRoute);
+
 
 // custom middlewares
 app.use(notFoundMiddleware);
