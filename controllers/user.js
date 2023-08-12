@@ -1,13 +1,17 @@
-const User = require('../models/user');
-const Role = require('../models/role');
 const { StatusCodes } = require('http-status-codes');
 const BadRequestError = require('../errors/bad-request');
 const NotFoundError = require('../errors/not-found');
-const user = require('../models/user');
+const { getRoleService } = require('../services/role.service');
+const { getUserService, 
+getUsersService,
+createUserService,
+updateUserService,
+deleteUserService 
+} = require('../services/user.service');
 
 const getUser = async (req,res) => {
     const {id} = req.params;
-    const user = await User.findOne({_id:id});
+    const user = await getUserService(id);
     if(!user) {
         throw new BadRequestError(`User with ID ${id} doesn't exist.`);
     }
@@ -19,14 +23,7 @@ const getUser = async (req,res) => {
 }
 
 const getAllUsers = async (req,res) => {
-    const {username} = req.query;
-    const queryObj = {};
-
-    if(username) {
-        queryObj.username = {$regex:username, $options:'i'};
-    }
-
-    const users = await User.find(queryObj);
+    const users = await getUsersService(req.query);
     res.status(200).json({
         message:"success",
         count: users.length,
@@ -35,13 +32,13 @@ const getAllUsers = async (req,res) => {
 }
 
 const addUser = async (req,res) => {
-    const {role:roleId} = req.body;
-    const getRole = await Role.findOne({_id:roleId});
+    const getRole = await getRoleService(req.body.role);
     // check if role exists
     if(!getRole) {
-        throw new NotFoundError(`Role with ID ${roleId} does not exist.`);
+        throw new NotFoundError(`Role ID does not exist.`);
     }
-    const user = await User.create(req.body);
+    
+    const user = await createUserService(req.body);
     res.status(StatusCodes.CREATED).json({
         "message": "Successfully added user.",
         user
@@ -49,22 +46,21 @@ const addUser = async (req,res) => {
 }
 
 const updateUser = async (req,res) => {
-    const {id} = req.params;
-    const user = await User.findOne({_id:id});
+    const user = await getUserService(req.params.id);
     if(!user) {
-        throw new NotFoundError(`User with ID ${id} does not exist.`)
+        throw new NotFoundError(`User ID does not exist.`);
     }
 
+    // if role is being updated
     if(req.body.role) {
-        const { role:roleId } = req.body
         //check if role.id exists
-        const role = await Role.findOne({_id:roleId});
+        const role = await getRoleService(req.body.role);
         if(!role) {
-            throw new NotFoundError(`Role with ID ${roleId} does not exist.`);
+            throw new NotFoundError(`Role ID does not exist.`);
         }
     }
 
-    const result = await User.findOneAndUpdate({_id:id}, req.body, {new:true});
+    const result = await updateUserService(req.params.id, req.body);
     res.status(StatusCodes.OK).json({
         message:"Successfully updated user.",
         user: result
@@ -72,12 +68,11 @@ const updateUser = async (req,res) => {
 }
 
 const deleteUser = async (req,res) => {
-    const {id} = req.params;
-    const user = await User.findOne({_id:id});
+    const user = await getUserService(req.params.id);
     if(!user) {
-        throw new NotFoundError(`User with ID ${id} does not exist.`)
+        throw new NotFoundError(`User ID does not exist.`)
     }
-    const result = await User.findOneAndDelete({_id:id});
+    const result = await deleteUserService(req.params.id);
     res.status(200).json({
         message:'Successfully deleted user.',
         user: result

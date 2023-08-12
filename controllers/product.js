@@ -1,83 +1,64 @@
-const Product = require('../models/product')
 const BadRequestError = require('../errors/bad-request');
 const {StatusCodes} = require('http-status-codes');
+const { getProductService,
+getProductsService,
+createProductService,
+updateProductService,
+deleteProductService
+} = require('../services/product.service');
 
 const getProduct = async (req,res) => {
-    res.send('get product')
+    const product = await getProductService(req.params.id);
+    if(!product) {
+        throw new BadRequestError('Product ID does not exist.');
+    }
+
+    res.status(StatusCodes.OK).json({
+        message: "success",
+        product
+    })
 }
 
 const getProducts = async (req,res) => {
-    const { featured, company, name, sort, fields} = req.query;
-    const queryObj = {};
-
-    if(featured)
-        queryObj.featured = featured === 'true' ? true : false;
-
-    if(company)
-        queryObj.company = company;
-
-    if(name)
-        queryObj.name = { $regex:name, $options:'i' };
-
-    const result = Product.find(queryObj)
-
-    if(sort) {
-        const sortList = sort.split(',').join(' ');
-        result.sort(sortList);
-    } else {
-        result.sort('createdAt');
-    }
-
-    if(fields) {
-        result.select(fields.split(',').join(' '));
-    }
-
-    const page = Number(req.query.page) || 1;
-    const limit = Number(req.query.limit) || 10;
-    const skip = (page-1) * limit;
-    const products = await result.skip(skip).limit(limit);
+    const products = await getProductsService(req.query);
     res.status(StatusCodes.OK).json({
         message: "success",
         count: products.length, 
-        data: { products },
+        products
     });
 }
 
 const addProduct = async (req,res) => {
-    const addedProduct = await Product.create(req.body);
-    res.status(StatusCodes.OK).json(
-    { message: "Successfully added product.",
-      data: addedProduct
+    const product = await createProductService(req.body);
+    res.status(StatusCodes.OK).json({ 
+        message: "Successfully added product.",
+        product
     });
 }
 
 const updateProduct = async (req,res) => {
-    const {id:productID} = req.params;
-    const product = await Product.findOne({_id:productID});
+    const product = await getProductService(req.params.id);
     if(!product) {
-        throw new BadRequestError(`Product with ID ${productID} not found.`);
+        throw new BadRequestError(`Product ID deos not exist.`);
     }
 
-    const result = await Product
-        .findOneAndUpdate(
-            {_id:productID}, 
-            req.body,
-            {new:true, runValidators:true}
-        );
-    res.status(StatusCodes.OK).json({message:"Update successful", result});
+    const result = await updateProductService(req.params.id, req.body);
+    res.status(StatusCodes.OK).json({
+        message:"Successfully updated product.", 
+        product: result
+    });
 }
 
 const deleteProduct = async (req,res) => {
-    const {id:productId} = req.params;
-    const product = await Product.findOne({_id:productId});
+    const product = await getProductService(req.params.id);
     if(!product) {
-        throw new BadRequestError(`Product with ID ${productId} not found.`);
+        throw new BadRequestError(`Product ID does not exist.`);
     }
 
-    const result = await Product.findOneAndDelete({_id:productId},{new:true});
+    const result = await deleteProductService({_id:req.params.id});
     res.status(StatusCodes.OK).json({
-        message: "Product successfully deleted.",
-        data: result
+        message: "Successfully deleted product.",
+        product: result
     })
 }
 
