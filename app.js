@@ -19,6 +19,11 @@ const cors = require('cors');
 const limiter = require('express-rate-limit');
 const xss = require('xss-clean');
 
+// swagger
+const swaggerUI = require('swagger-ui-express');
+const YAML = require('yamljs');
+const swaggerDocument = YAML.load('./swagger.yaml');
+
 //middlewares
 app.set('trust proxy', 1);
 app.use(limiter({
@@ -31,8 +36,12 @@ app.use(cors());
 app.use(express.json());
 app.use(morgan('tiny'));
 
+app.get('/api/v1', (req,res) => {
+    res.send("<h1>Store API</h1><a href='/api-docs'>Documentation</a>")
+});
+app.use('/api-docs', swaggerUI.serve, swaggerUI.setup(swaggerDocument));
+
 // routes
-app.get('/api/v1', (req,res) => res.send("Welcome to store-api"));
 app.use('/api/v1', authRoute);
 app.use('/api/v1/users', authenticationMiddleware, userRoute);
 app.use('/api/v1/roles', authenticationMiddleware, roleRoute);

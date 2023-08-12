@@ -1,0 +1,493 @@
+openapi: 3.0.0
+info:
+  title: Store API
+  contact: {}
+  version: '1.0'
+servers:
+- url: https://store-api-gwgs.onrender.com/api/v1
+  variables: {}
+paths:
+  /register:
+    post:
+      tags:
+      - Authentication
+      summary: Register
+      operationId: Register
+      parameters: []
+      requestBody:
+        description: ''
+        content:
+          application/json:
+            schema:
+              allOf:
+              - $ref: '#/components/schemas/RegisterRequest'
+              - example:
+                  email: admin@gmail.com
+                  username: admin
+                  password: admin123
+                  role: 64d2602a59cde3ee438d521c
+            example:
+              email: admin@gmail.com
+              username: admin
+              password: admin123
+              role: 64d2602a59cde3ee438d521c
+        required: true
+      responses:
+        '200':
+          description: ''
+          headers: {}
+      deprecated: false
+      security: []
+  /login:
+    post:
+      tags:
+      - Authentication
+      summary: Login
+      operationId: Login
+      parameters: []
+      requestBody:
+        description: ''
+        content:
+          application/json:
+            schema:
+              allOf:
+              - $ref: '#/components/schemas/LoginRequest'
+              - example:
+                  email: admin@gmail.com
+                  password: admin123
+            example:
+              email: admin@gmail.com
+              password: admin123
+        required: true
+      responses:
+        '200':
+          description: ''
+          headers: {}
+      deprecated: false
+      security: []
+  /products:
+    get:
+      tags:
+      - Products
+      summary: Get All Products
+      operationId: GetAllProducts
+      parameters: []
+      responses:
+        '200':
+          description: ''
+          headers: {}
+      deprecated: false
+      security:
+      - bearer: []
+    post:
+      tags:
+      - Products
+      summary: Add Product
+      operationId: AddProduct
+      parameters: []
+      requestBody:
+        description: ''
+        content:
+          text/plain:
+            schema:
+              type: object
+              example: {}
+            example: {}
+        required: true
+      responses:
+        '200':
+          description: ''
+          headers: {}
+      deprecated: false
+      security:
+      - bearer: []
+  /products/{id}:
+    parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+        required: true
+        description: The user ID
+    get:
+      tags:
+      - Products
+      summary: Get Product
+      operationId: GetProduct
+      parameters: []
+      responses:
+        '200':
+          description: ''
+          headers: {}
+      deprecated: false
+      security:
+      - bearer: []
+    patch:
+      tags:
+      - Products
+      summary: Update Product
+      operationId: UpdateProduct
+      parameters: []
+      requestBody:
+        description: ''
+        content:
+          text/plain:
+            schema:
+              type: object
+              example: {}
+            example: {}
+        required: true
+      responses:
+        '200':
+          description: ''
+          headers: {}
+      deprecated: false
+      security:
+      - bearer: []
+    delete:
+      tags:
+      - Products
+      summary: Delete Product
+      operationId: DeleteProduct
+      parameters: []
+      responses:
+        '200':
+          description: ''
+          headers: {}
+      deprecated: false
+      security:
+      - bearer: []
+  /users:
+    get:
+      tags:
+      - Users
+      summary: Get All Users
+      operationId: GetAllUsers
+      parameters: []
+      responses:
+        '200':
+          description: ''
+          headers: {}
+      deprecated: false
+      security:
+      - bearer: []
+    post:
+      tags:
+      - Users
+      summary: Add User
+      operationId: AddUser
+      parameters: []
+      requestBody:
+        description: ''
+        content:
+          application/json:
+            schema:
+              allOf:
+              - $ref: '#/components/schemas/AddUserRequest'
+              - example:
+                  email: tonystark@gmail.com
+                  username: tonystark
+                  password: tonystark123
+                  role:
+                    _id: 64cea9a3ab37cedf2b420f92
+            example:
+              email: tonystark@gmail.com
+              username: tonystark
+              password: tonystark123
+              role:
+                _id: 64cea9a3ab37cedf2b420f92
+        required: true
+      responses:
+        '200':
+          description: ''
+          headers: {}
+      deprecated: false
+      security:
+      - bearer: []
+  /users/{id}:
+    parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+        required: true
+        description: The user ID
+    get:
+      tags:
+      - Users
+      summary: Get User
+      operationId: GetUser
+      parameters: []
+      responses:
+        '200':
+          description: ''
+          headers: {}
+      deprecated: false
+      security:
+      - bearer: []
+    patch:
+      tags:
+      - Users
+      summary: Update User
+      operationId: UpdateUser
+      parameters: []
+      requestBody:
+        description: ''
+        content:
+          application/json:
+            schema:
+              allOf:
+              - $ref: '#/components/schemas/UpdateUserRequest'
+              - example:
+                  email: admin@gmail.com
+                  username: admin
+                  role:
+                    _id: 64cea6cbab37cedf2b420f8f
+            example:
+              email: admin@gmail.com
+              username: admin
+              role:
+                _id: 64cea6cbab37cedf2b420f8f
+        required: true
+      responses:
+        '200':
+          description: ''
+          headers: {}
+      deprecated: false
+      security:
+      - bearer: []
+    delete:
+      tags:
+      - Users
+      summary: Delete User
+      operationId: DeleteUser
+      parameters: []
+      responses:
+        '200':
+          description: ''
+          headers: {}
+      deprecated: false
+      security:
+      - bearer: []
+  /roles:
+    get:
+      tags:
+      - Roles
+      summary: Get All Roles
+      operationId: GetAllRoles
+      parameters: []
+      responses:
+        '200':
+          description: ''
+          headers: {}
+      deprecated: false
+      security:
+      - bearer: []
+    post:
+      tags:
+      - Roles
+      summary: Add Role
+      operationId: AddRole
+      parameters: []
+      requestBody:
+        description: ''
+        content:
+          application/json:
+            schema:
+              allOf:
+              - $ref: '#/components/schemas/AddRoleRequest'
+              - example:
+                  name: test
+            example:
+              name: test
+        required: true
+      responses:
+        '200':
+          description: ''
+          headers: {}
+      deprecated: false
+      security:
+      - bearer: []
+  /roles/{id}:
+    parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+        required: true
+        description: The role ID
+    get:
+      tags:
+      - Roles
+      summary: Get Role
+      operationId: GetRole
+      parameters: []
+      responses:
+        '200':
+          description: ''
+          headers: {}
+      deprecated: false
+      security:
+      - bearer: []
+    patch:
+      tags:
+      - Roles
+      summary: Update Role
+      operationId: UpdateRole
+      parameters: []
+      requestBody:
+        description: ''
+        content:
+          application/json:
+            schema:
+              allOf:
+              - $ref: '#/components/schemas/UpdateRoleRequest'
+              - example:
+                  name: user
+            example:
+              name: user
+        required: true
+      responses:
+        '200':
+          description: ''
+          headers: {}
+      deprecated: false
+      security:
+      - bearer: []
+    delete:
+      tags:
+      - Roles
+      summary: Delete Role
+      operationId: DeleteRole
+      parameters: []
+      responses:
+        '200':
+          description: ''
+          headers: {}
+      deprecated: false
+      security:
+      - bearer: []
+components:
+  schemas:
+    RegisterRequest:
+      title: RegisterRequest
+      required:
+      - email
+      - username
+      - password
+      - role
+      type: object
+      properties:
+        email:
+          type: string
+        username:
+          type: string
+        password:
+          type: string
+        role:
+          type: string
+      example:
+        email: admin@gmail.com
+        username: admin
+        password: admin123
+        role: 64d2602a59cde3ee438d521c
+    LoginRequest:
+      title: LoginRequest
+      required:
+      - email
+      - password
+      type: object
+      properties:
+        email:
+          type: string
+        password:
+          type: string
+      example:
+        email: admin@gmail.com
+        password: admin123
+    AddUserRequest:
+      title: AddUserRequest
+      required:
+      - email
+      - username
+      - password
+      - role
+      type: object
+      properties:
+        email:
+          type: string
+        username:
+          type: string
+        password:
+          type: string
+        role:
+          allOf:
+          - $ref: '#/components/schemas/Role'
+          - {}
+      example:
+        email: tonystark@gmail.com
+        username: tonystark
+        password: tonystark123
+        role:
+          _id: 64cea9a3ab37cedf2b420f92
+    Role:
+      title: Role
+      required:
+      - _id
+      type: object
+      properties:
+        _id:
+          type: string
+      example:
+        _id: 64cea9a3ab37cedf2b420f92
+    UpdateUserRequest:
+      title: UpdateUserRequest
+      required:
+      - email
+      - username
+      - role
+      type: object
+      properties:
+        email:
+          type: string
+        username:
+          type: string
+        role:
+          allOf:
+          - $ref: '#/components/schemas/Role'
+          - {}
+      example:
+        email: admin@gmail.com
+        username: admin
+        role:
+          _id: 64cea6cbab37cedf2b420f8f
+    AddRoleRequest:
+      title: AddRoleRequest
+      required:
+      - name
+      type: object
+      properties:
+        name:
+          type: string
+      example:
+        name: test
+    UpdateRoleRequest:
+      title: UpdateRoleRequest
+      required:
+      - name
+      type: object
+      properties:
+        name:
+          type: string
+      example:
+        name: user
+  securitySchemes:
+    bearer:
+      type: http
+      scheme: bearer
+security: []
+tags:
+- name: Authentication
+- name: Products
+- name: Users
+- name: Roles
