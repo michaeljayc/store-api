@@ -8,10 +8,7 @@ const {
     deleteRole
 } = require('../controllers/role');
 
-router.route('/').get(getAllRoles);
-router.route('/:id').get(getRole);
-router.route('/add').post(addRole);
-router.route('/update/:id').patch(updateRole);
-router.route('/delete/:id').delete(deleteRole);
+router.route('/').get(getAllRoles).post(addRole); 
+router.route('/:id').get(getRole).patch(updateRole).delete(deleteRole);
 
 module.exports = router;
