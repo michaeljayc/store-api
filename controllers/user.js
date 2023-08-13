@@ -1,7 +1,6 @@
 const { StatusCodes } = require('http-status-codes');
 const BadRequestError = require('../errors/bad-request');
 const NotFoundError = require('../errors/not-found');
-const { getRoleService } = require('../services/role.service');
 const { getUserService, 
 getUsersService,
 createUserService,
@@ -9,6 +8,12 @@ updateUserService,
 deleteUserService 
 } = require('../services/user.service');
 
+const userInfo = (req,res) => {
+    res.status(StatusCodes.OK).json({
+        message:"User information",
+        user: req.user
+    })
+}
 const getUser = async (req,res) => {
     const {id} = req.params;
     const user = await getUserService(id);
@@ -32,12 +37,6 @@ const getAllUsers = async (req,res) => {
 }
 
 const addUser = async (req,res) => {
-    const getRole = await getRoleService(req.body.role);
-    // check if role exists
-    if(!getRole) {
-        throw new NotFoundError(`Role ID does not exist.`);
-    }
-    
     const user = await createUserService(req.body);
     res.status(StatusCodes.CREATED).json({
         "message": "Successfully added user.",
@@ -51,16 +50,7 @@ const updateUser = async (req,res) => {
         throw new NotFoundError(`User ID does not exist.`);
     }
 
-    // if role is being updated
-    if(req.body.role) {
-        //check if role.id exists
-        const role = await getRoleService(req.body.role);
-        if(!role) {
-            throw new NotFoundError(`Role ID does not exist.`);
-        }
-    }
-
-    const result = await updateUserService(req.params.id, req.body);
+    const result = await updateUserService(user._id, req.body);
     res.status(StatusCodes.OK).json({
         message:"Successfully updated user.",
         user: result
@@ -72,7 +62,7 @@ const deleteUser = async (req,res) => {
     if(!user) {
         throw new NotFoundError(`User ID does not exist.`)
     }
-    const result = await deleteUserService(req.params.id);
+    const result = await deleteUserService(user._id);
     res.status(200).json({
         message:'Successfully deleted user.',
         user: result
@@ -84,5 +74,6 @@ module.exports = {
     getAllUsers,
     addUser,
     updateUser,
-    deleteUser
+    deleteUser,
+    userInfo
 }

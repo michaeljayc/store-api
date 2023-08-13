@@ -1,5 +1,4 @@
 const User = require('../models/user');
-const { getRoleService } = require('./role.service');
 
 const getUserService = async (userId) => {
     return await User.findOne({_id:userId});

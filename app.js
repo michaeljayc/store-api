@@ -1,17 +1,24 @@
-require('dotenv').config();
-require('express-async-errors');
+// creating express server
 const express = require('express');
 const app = express();
-const morgan = require('morgan');
-const notFoundMiddleware = require('./middlewares/notFound');
-const { errorHandlerMiddleware }= require('./middlewares/error-handler');
-const authenticationMiddleware = require('./middlewares/auth');
+
+// packages
+require('dotenv').config();
+require('express-async-errors');
+const morgan = require('morgan'); 
+const cookieParser = require('cookie-parser');
+
+// database 
 const connectToDB = require('./db/dbConnect');
+
+// custom middlewares
+const notFoundMiddleware = require('./middlewares/notFound');
+const { errorHandlerMiddleware } = require('./middlewares/error-handler');
+
+// routes
 const productRoute = require('./routes/product');
 const authRoute = require("./routes/auth");
 const userRoute = require('./routes/user');
-const roleRoute = require('./routes/role');
-
 
 //extra security packages
 const helmet = require('helmet');
@@ -24,7 +31,7 @@ const swaggerUI = require('swagger-ui-express');
 const YAML = require('yamljs');
 const swaggerDocument = YAML.load('./swagger.yaml');
 
-//middlewares
+// using packages
 app.set('trust proxy', 1);
 app.use(limiter({
     windowMs: 15 * 60 * 1000, // 15 minutes
@@ -34,20 +41,21 @@ app.use(xss());
 app.use(helmet());
 app.use(cors());
 app.use(express.json());
+app.use(cookieParser(process.env.SECRET_TOKEN));
 app.use(morgan('tiny'));
 
+// swagger documentation
 app.get('/api/v1', (req,res) => {
     res.send("<h1>Store API</h1><a href='/api-docs'>Documentation</a>")
 });
 app.use('/api-docs', swaggerUI.serve, swaggerUI.setup(swaggerDocument));
 
-// routes
+// routing uri's
 app.use('/api/v1', authRoute);
-app.use('/api/v1/users', authenticationMiddleware, userRoute);
-app.use('/api/v1/roles', authenticationMiddleware, roleRoute);
-app.use('/api/v1/products', authenticationMiddleware, productRoute);
+app.use('/api/v1/users', userRoute);
+app.use('/api/v1/products', productRoute);
 
-// custom middlewares
+// using custom middlewares
 app.use(notFoundMiddleware);
 app.use(errorHandlerMiddleware);
 
