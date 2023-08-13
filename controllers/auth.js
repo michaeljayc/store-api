@@ -2,24 +2,22 @@ require('dotenv').config();
 const {StatusCodes} = require('http-status-codes');
 const BadRequestError = require("../errors/bad-request");
 const UnauthorizedError = require("../errors/unautheticated");
-const jwt = require('jsonwebtoken');
+const {attachCookieToResponse, removeCookie} = require('../utils')
 const User = require('../models/user');
-const Role = require('../models/role');
 
-const register = async (req,res) => {
-    const role = await Role.findOne({_id:req.body.role});
-    if(!role) {
-        throw new BadRequestError(`Please provide correct role id.`);
-    }
-    
+const register = async (req,res) => {    
     const result = await User.create(req.body);
+    attachCookieToResponse(res,{
+        username: result.username, 
+        role: result.role 
+    })
+
     res.status(StatusCodes.CREATED).json({
         message: "Registration successful!",
         user: {
             username: result.username,
             role: result.role
         },
-        token: await result.generateToken()
     });
 }
 
@@ -40,16 +38,26 @@ const login = async (req, res) => {
         throw new UnauthorizedError("Incorrect password.");
     }
 
-    const token = result.generateToken();
+    attachCookieToResponse(res,{
+        username: result.username, 
+        role: result.role 
+    })
+
     res.status(StatusCodes.OK).json({
         message: "Login successful!",
         user: {
             email: result.email,
             username: result.username,
             role: result.role
-        },
-        token
+        }
     });
 }
 
-module.exports = { register, login };
+const logout = (req,res) => {
+    removeCookie(res);
+    res.status(StatusCodes.OK).json({
+        message:"You are now logged out."
+    })
+}
+
+module.exports = { register, login, logout };

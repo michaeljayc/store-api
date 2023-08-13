@@ -1,23 +1,36 @@
-require('dotenv').config();
-const UnauthenticatedError  = require("../errors/unautheticated");
-const jwt = require('jsonwebtoken');
+const UnauthenticatedError = require("../errors/unautheticated");
+const ForbiddenError =  require("../errors/forbidden");
+const { verifyJWT } = require('../utils')
 
 const authenticationMiddleware = async (req,res,next) => {
-    const authHeader = req.headers.authorization;
-    if(!authHeader || !authHeader.startsWith('Bearer')) {
-        throw new UnauthenticatedError("Authentication error.");
+    const token = req.signedCookies.token;
+    if(!token) {
+        throw new UnauthenticatedError("You need to login.")
     }
 
-    const token = authHeader.split(' ')[1];
-    const decoded = jwt.verify(token, process.env.SECRET_TOKEN);
-    if(!decoded) {
-        throw new UnauthenticatedError("Unauthorized to access route.");
+    try {
+        const user = verifyJWT(token)
+        req.user = {
+            username: user.username,
+            role: user.role
+        };
+        next();
+    } catch(error) {
+        throw new UnauthenticatedError("Authentication failed.")
     }
-    req.user = {
-        username: decoded.username,
-        role: decoded.role
-    };
-    next();
 }
 
-module.exports = authenticationMiddleware;
+const authorizationMiddleware = (...roles) => {
+    return (req,res,next) => {
+        if(!roles.includes(req.user.role)) {
+            throw new ForbiddenError('Current role unable to access this route.');
+        }
+        next();
+    }
+}
+
+
+module.exports = {
+    authenticationMiddleware,
+    authorizationMiddleware
+}

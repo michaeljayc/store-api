@@ -7,9 +7,18 @@ const {
     updateProduct,
     deleteProduct
 } = require('../controllers/product');
+const { 
+    authenticationMiddleware, 
+    authorizationMiddleware
+} = require('../middlewares/auth');
 
 
-router.route('/').get(getProducts).post(addProduct);
-router.route('/:id').get(getProduct).patch(updateProduct).delete(deleteProduct);
+router.route('/')
+    .get(authenticationMiddleware, getProducts)
+    .post(authenticationMiddleware, authorizationMiddleware('admin'), addProduct);
+router.route('/:id')
+    .get(authenticationMiddleware, authorizationMiddleware('admin'), getProduct)
+    .patch(authenticationMiddleware, authorizationMiddleware('admin'), updateProduct)
+    .delete(authenticationMiddleware, authorizationMiddleware('admin'), deleteProduct);
 
 module.exports = router;
