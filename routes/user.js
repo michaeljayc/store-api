@@ -5,10 +5,21 @@ const {
     getAllUsers,
     addUser,
     updateUser,
-    deleteUser
+    deleteUser,
+    userInfo
 } = require('../controllers/user');
+const { 
+    authenticationMiddleware, 
+    authorizationMiddleware
+} = require('../middlewares/auth');
 
-router.route('/').get(getAllUsers).post(addUser);
-router.route('/:id').get(getUser).patch(updateUser).delete(deleteUser);
+router.route('/user').get(authenticationMiddleware, userInfo)
+router.route('/')
+    .get(authenticationMiddleware, authorizationMiddleware('admin'), getAllUsers)
+    .post(authenticationMiddleware, authorizationMiddleware('admin'), addUser);
+router.route('/:id')
+    .get(authenticationMiddleware, authorizationMiddleware('admin'), getUser)
+    .patch(authenticationMiddleware, authorizationMiddleware('admin'), updateUser)
+    .delete(authenticationMiddleware, authorizationMiddleware('admin'), deleteUser);
 
 module.exports = router;
