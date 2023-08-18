@@ -19,6 +19,7 @@ const { errorHandlerMiddleware } = require('./middlewares/error-handler');
 const productRoute = require('./routes/product');
 const authRoute = require("./routes/auth");
 const userRoute = require('./routes/user');
+const categoryRoute = require('./routes/category');
 
 //extra security packages
 const helmet = require('helmet');
@@ -54,6 +55,7 @@ app.use('/api-docs', swaggerUI.serve, swaggerUI.setup(swaggerDocument));
 app.use('/api/v1', authRoute);
 app.use('/api/v1/users', userRoute);
 app.use('/api/v1/products', productRoute);
+app.use('/api/v1/categories', categoryRoute);
 
 // using custom middlewares
 app.use(notFoundMiddleware);

@@ -3,11 +3,15 @@ const mongoose = require('mongoose');
 const ProductSchema = new mongoose.Schema({
     name: {
         type: String,
-        required: [true, 'name must be provided']
+        required: [true, 'Name must be provided'],
+        minlength: 5,
+        maxlength: 25
     },
     price: {
         type: Number,
-        required: [true, 'Product price must be provided']
+        required: [true, 'Price must be provided'],
+        minlength: 5,
+        maxlength: 25
     },
     featured: {
         type: Boolean,
@@ -17,21 +21,10 @@ const ProductSchema = new mongoose.Schema({
         type: Number,
         default: 3
     },
-    createdAt: {
-        type: Date,
-        default: Date.now()
-    },
-    updatedAt: {
-        type: Date,
-        default: Date.now()
-    },
-    company: {
-        type: String,
-        enum: {
-            values: ['Ikea','\Leon\'s','Canadian Tire'],
-            message: '{VALUE} is not supported.'
-        }
-    }
-})
+    category: [{
+        type: mongoose.Schema.ObjectId,
+        ref: 'Category'
+    }]
+},{timestamps:true})
 
 module.exports = mongoose.model('Product', ProductSchema);
