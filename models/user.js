@@ -26,7 +26,7 @@ const UserSchema = new mongoose.Schema({
         enum: ['admin','user'],
         default: 'user'
     }
-}, {timestamps:true});
+}, {timestamps:true, versionKey: false});
 
 UserSchema.pre('save', async function() {
     const salt = await bcrypt.genSalt(10);
