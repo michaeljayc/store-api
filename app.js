@@ -19,6 +19,7 @@ const { errorHandlerMiddleware } = require('./middlewares/error-handler');
 const productRoute = require('./routes/product');
 const authRoute = require("./routes/auth");
 const userRoute = require('./routes/user');
+const storeRoute = require('./routes/store');
 const categoryRoute = require('./routes/category');
 
 //extra security packages
@@ -56,6 +57,7 @@ app.use('/api/v1', authRoute);
 app.use('/api/v1/users', userRoute);
 app.use('/api/v1/products', productRoute);
 app.use('/api/v1/categories', categoryRoute);
+app.use('/api/v1/stores', storeRoute);
 
 // using custom middlewares
 app.use(notFoundMiddleware);
