@@ -1,10 +1,12 @@
 const BadRequestError = require('../errors/bad-request');
-const {StatusCodes} = require('http-status-codes');
-const { getProductService,
-getProductsService,
-createProductService,
-updateProductService,
-deleteProductService
+const { StatusCodes } = require('http-status-codes');
+const { getStoreService } = require('../services/store.service');
+const { 
+ getProductService,
+ getProductsService,
+ createProductService,
+ updateProductService,
+ deleteProductService
 } = require('../services/product.service');
 
 const getProduct = async (req,res) => {
@@ -29,6 +31,11 @@ const getProducts = async (req,res) => {
 }
 
 const addProduct = async (req,res) => {
+    const {store_id} = req.body;
+    const store = await getStoreService(store_id);
+    if(!store) {
+        throw new BadRequestError('Store ID does not exist.');
+    }
     const product = await createProductService(req.body);
     res.status(StatusCodes.OK).json({ 
         message: "Successfully added product.",
@@ -37,12 +44,22 @@ const addProduct = async (req,res) => {
 }
 
 const updateProduct = async (req,res) => {
-    const product = await getProductService(req.params.id);
+    const {id} = req.params;
+    const {store_id} = req.body;
+
+    const product = await getProductService(id);
     if(!product) {
         throw new BadRequestError(`Product ID deos not exist.`);
     }
 
-    const result = await updateProductService(req.params.id, req.body);
+    if(store_id) {
+        const store = await getStoreService(store_id);
+        if(!store) {
+            throw new BadRequestError('Store ID does not exist.');
+        }
+    }
+
+    const result = await updateProductService(id, req.body);
     res.status(StatusCodes.OK).json({
         message:"Successfully updated product.", 
         product: result
