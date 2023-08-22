@@ -47,8 +47,22 @@ app.use(cookieParser(process.env.SECRET_TOKEN));
 app.use(morgan('tiny'));
 
 // swagger documentation
-app.get('/api/v1', (req,res) => {
-    res.send("<h1>Store API</h1><a href='/api-docs'>Documentation</a>")
+app.get('/', (req,res) => {
+    res.send(
+        `<div>
+            <div>
+                <h1>Welcome to Store API version 1!</h1>
+                <p>This is an API service created by <strong>Michael Jay Caballero</strong>
+                    using Javascript, Node.JS, Express and MongoDB. 
+                </p>
+                <p>Please be patient if some documentations or routes are not updated
+                since constant updates are being made to this API. Thank you! </p>
+            </div>
+            <ul>
+                <li> <a href='/api-docs'>Documentation Link</a></li>
+            </ul>
+        </div>`
+    );
 });
 app.use('/api-docs', swaggerUI.serve, swaggerUI.setup(swaggerDocument));
 
