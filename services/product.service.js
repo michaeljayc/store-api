@@ -4,15 +4,12 @@ const getProductService = async (userId) => {
     return await Product.findOne({_id:userId});
 }
 
-const getProductsService = async (requestQuery) => {
-    const { featured, company, name, sort, fields} = requestQuery;
+const getProductsService = async (query) => {
+    const { featured, name, sort, fields} = query;
     const queryObj = {};
 
     if(featured)
         queryObj.featured = featured === 'true' ? true : false;
-
-    if(company)
-        queryObj.company = company;
 
     if(name)
         queryObj.name = { $regex:name, $options:'i' };
@@ -28,8 +25,8 @@ const getProductsService = async (requestQuery) => {
         result.select(fields.split(',').join(' '));
     }
 
-    const page = Number(requestQuery.page ) || 1 ;
-    const limit = Number(requestQuery.limit) || 10;
+    const page = Number(query.page ) || 1 ;
+    const limit = Number(query.limit) || 10;
     const skip = (page-1) * limit;
     const products = await result.skip(skip).limit(limit);
     return products;
