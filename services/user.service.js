@@ -39,7 +39,7 @@ const getUsersService = async (query) => {
 
 const createUserService = async (requestbod) => {
     return await User.create(requestbod);
-} 
+}
 
 const updateUserService = async (userId, requestbody) => {
     return await User.findOneAndUpdate({_id:userId}, requestbody, {new:true});
