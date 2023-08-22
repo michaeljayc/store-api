@@ -13,7 +13,7 @@ const getCategoriesService = async (query) => {
     }
 
     const result = Category.find(queryObj);
-    console.log(result);
+
     if(sort) {
         const sortList = sort.split(',').join(' ');
         result.sort(sortList);

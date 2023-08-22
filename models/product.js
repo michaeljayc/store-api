@@ -7,11 +7,17 @@ const ProductSchema = new mongoose.Schema({
         minlength: 5,
         maxlength: 25
     },
+    description: {
+        type: String,
+    },
+    image: {
+        type: String,
+    },
     price: {
         type: Number,
         required: [true, 'Price must be provided'],
-        minlength: 5,
-        maxlength: 25
+        minlength: 1,
+        maxlength: 10
     },
     featured: {
         type: Boolean,
@@ -21,10 +27,11 @@ const ProductSchema = new mongoose.Schema({
         type: Number,
         default: 3
     },
-    category: [{
-        type: mongoose.Schema.ObjectId,
-        ref: 'Category'
-    }]
-},{timestamps:true})
+    store_id: {
+        type: mongoose.Types.ObjectId,
+        ref: "Store",
+        required: [true, "Please provide Store ID"]
+    }
+},{timestamps:true, versionKey: false});
 
 module.exports = mongoose.model('Product', ProductSchema);

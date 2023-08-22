@@ -12,6 +12,6 @@ const CategorySchema  = new mongoose.Schema({
         minlength: 5,
         maxlength: 250
     }
-},{timestamps:true})
+},{timestamps:true, versionKey:false})
 
 module.exports = mongoose.model("Category", CategorySchema);

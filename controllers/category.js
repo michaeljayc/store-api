@@ -9,7 +9,6 @@ const {
 } = require('../services/category.service');
 
 const getCategory = async (req,res) => {
-    console.log(req.params)
     const category = await getCategoryService(req.params.id);
     if(!category) {
         throw new BadRequestError('Category ID does not exist.');
