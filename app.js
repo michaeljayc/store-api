@@ -52,9 +52,9 @@ app.get('/', (req,res) => {
         `<div>
             <div>
                 <h1>Welcome to Store API version 1!</h1>
-                <h4>This is an API service created by <b>Michael Jay Caballeor</b>
+                <p>This is an API service created by <strong>Michael Jay Caballero</strong>
                     using Javascript, Node.JS, Express and MongoDB. 
-                </h4>
+                </p>
                 <p>Please be patient if some documentations or routes are not updated
                 since constant updates are being made to this API. Thank you! </p>
             </div>
